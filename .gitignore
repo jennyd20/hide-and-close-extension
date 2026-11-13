@@ -1,5 +1,4 @@
 .vscode/launch.json
 .vscode/settings.json
 .vscode/chrome-profile/*
-SampleWebpages/*
 hide-and-close-extension/node_modules/*
