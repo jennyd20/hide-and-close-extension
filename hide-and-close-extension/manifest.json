@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Hide and Close",
+  "version": "1.0",
+  "description": "Hide a marketplace item directly or remove all sold items from a page",
+  "background": {
+    "service_worker": "src/main.js",
+    "type": "module"
+  },
+  "permissions": ["scripting", "activeTab"],
+  "action": {}
+}
