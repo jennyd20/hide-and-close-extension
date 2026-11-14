@@ -7,6 +7,8 @@
     "service_worker": "src/main.js",
     "type": "module"
   },
-  "permissions": ["scripting", "activeTab"],
-  "action": {}
+  "permissions": ["activeTab"],
+  "action": {
+    "default_title": "Hide and Close"
+  }
 }
