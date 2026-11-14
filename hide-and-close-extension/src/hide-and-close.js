@@ -1,11 +1,11 @@
-function getUrl() {
+export function getUrl() {
   const currentUrl = window.location.href;
   console.log({ currentUrl });
   return currentUrl;
 }
 
 export function getTarget(currentUrl) {
-  console.log("Starting script");
+  console.log('Starting script');
 
   const fbItemUrlRegex =
     /^https:\/\/www\.facebook\.com\/marketplace\/item\/\d+\/?(\?.*)?$/;
@@ -15,8 +15,8 @@ export function getTarget(currentUrl) {
     /^https:\/\/www\.facebook\.com\/saved\/?(?:\?(?![^#]*\bdashboard_section=(?!PRODUCTS\/?(?:&|$)))[^#]*)?$/;
 
   const supportedTargetUrls = [
-    [fbItemUrlRegex, "fb-item"],
-    [fbSavedCleanupRegex, "fb-saved-cleanup"],
+    [fbItemUrlRegex, 'fb-item'],
+    [fbSavedCleanupRegex, 'fb-saved-cleanup'],
   ];
 
   const urlMatch = supportedTargetUrls.find(([targetUrl]) =>
@@ -28,10 +28,10 @@ export function getTarget(currentUrl) {
 }
 
 export async function executeTarget(target) {
-  const targetPath = "./targets/" + target + ".js";
+  const targetPath = './targets/' + target + '.js';
   const { targetScript } = await import(targetPath);
 
-  if (typeof targetScript === "function") {
+  if (typeof targetScript === 'function') {
     targetScript();
   }
   return targetScript;
@@ -52,4 +52,3 @@ export async function executeTarget(target) {
 //   console.error("No supported targets found");
 //   // throw new Error('Error: Not a supported target');
 // }
-

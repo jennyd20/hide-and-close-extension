@@ -1,7 +1,7 @@
 export async function triggerClickAndWait(el, selector) {
   try {
     el.click();
-    console.log("Button clicked, waiting for target");
+    console.log('Button clicked, waiting for target');
     return await waitForElement(selector);
   } catch (error) {
     console.error(error.message);

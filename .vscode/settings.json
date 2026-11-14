@@ -32,5 +32,6 @@
   "[javascript]": {
     "editor.formatOnSave": true
   },
-  "js/ts.implicitProjectConfig.checkJs": true,
+  "eslint.run": "onSave",
+  "js/ts.validate.enabled": false,
 }

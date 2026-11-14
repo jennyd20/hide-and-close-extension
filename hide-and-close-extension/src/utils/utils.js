@@ -1,20 +1,20 @@
-import { triggerClickAndWait } from "./index.js";
+import { triggerClickAndWait } from './index.js';
 
 export function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
-  console.log("START - hideItem");
+  console.log('START - hideItem');
   // @J These are under the following node:
   //data-interactable="|click||input||keydown||keyup||change|"
   // @J is this too broad? Lots of those exist
   console.log({ moreLabel }, { menuLabel }, { hideLabel });
 
   try {
-    console.log("Getting the more options button");
+    console.log('Getting the more options button');
     // Click the button for additional options
     const moreOptions = i.querySelector(
       '[role="button"][aria-label="' + moreLabel + '"]',
     );
     console.log({ moreOptions });
-    console.log("Clicking moreOptions");
+    console.log('Clicking moreOptions');
     const moreMenu = triggerClickAndWait(
       moreOptions,
       '[role="menu"][aria-label="' + menuLabel + '"]',
@@ -29,33 +29,33 @@ export function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
     // console.log({ moreMenu });
 
     // Get items in the new menu
-    console.log("Getting the menu options");
+    console.log('Getting the menu options');
     const menuOptions = moreMenu.querySelectorAll('[role="menuitem"]');
     console.log({ menuOptions });
 
     // Find the correct hide button
-    console.log("Finding the hide button");
+    console.log('Finding the hide button');
     const hideOption = [...menuOptions].find((el) =>
       el.textContent.trim().startsWith(hideLabel),
     );
     console.log({ hideOption });
 
     // Activate
-    console.log("Clicking the hide button");
+    console.log('Clicking the hide button');
     //clickElement(hideOption);
     hideOption.click();
-    console.log("END - hideItem (success)");
+    console.log('END - hideItem (success)');
     return true;
   } catch (e) {
     // Something failed
     console.error(e);
-    console.log("END - hideItem (failure)");
+    console.log('END - hideItem (failure)');
     return false;
   }
 }
 
 export async function scrollToBottom() {
-  console.log("START - scrollToBottom");
+  console.log('START - scrollToBottom');
   let lastHeight = document.body.scrollHeight;
 
   while (true) {
@@ -72,6 +72,6 @@ export async function scrollToBottom() {
     }
     lastHeight = newHeight;
   }
-  console.log("Reached the bottom!");
-  console.log("END - scrollToBottom");
+  console.log('Reached the bottom!');
+  console.log('END - scrollToBottom');
 }

@@ -1,13 +1,13 @@
-import { beforeEach, afterEach, expect, test, describe, vi } from "vitest";
-import { hideItem, scrollToBottom } from "./utils.js";
+import { beforeEach, afterEach, expect, test, describe, vi } from 'vitest';
+import { hideItem, scrollToBottom } from './utils.js';
 
-describe("Compiles", () => {
-  test("Script compiles", () => {
+describe('Compiles', () => {
+  test('Script compiles', () => {
     expect(true).toBe(true);
   });
 });
 
-describe("Scrolling", () => {
+describe('Scrolling', () => {
   // Test written by Antigravity
   beforeEach(() => {
     vi.useFakeTimers();
@@ -18,18 +18,18 @@ describe("Scrolling", () => {
     vi.useRealTimers();
   });
 
-  test("Scroll window until document height stops changing", async () => {
+  test('Scroll window until document height stops changing', async () => {
     // 1. Mock window.scrollTo to update window.scrollY
     window.scrollY = 0;
     const scrollToSpy = vi
-      .spyOn(window, "scrollTo")
+      .spyOn(window, 'scrollTo')
       .mockImplementation((x, y) => {
         window.scrollY = y;
       });
 
     // 2. Mock document.body.scrollHeight to simulate page content expanding once, then stopping
     let heightAccessCount = 0;
-    vi.spyOn(document.body, "scrollHeight", "get").mockImplementation(() => {
+    vi.spyOn(document.body, 'scrollHeight', 'get').mockImplementation(() => {
       // Return 1000 on initial check and 1st scroll, then increase to 2000, then stay at 2000
       if (heightAccessCount < 2) {
         heightAccessCount++;
