@@ -3,7 +3,9 @@
   "version": "1.0",
   "type": "module",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest --pool=threads",
+    "test:ui": "vitest --ui --pool=threads",
+    "coverage": "vitest run --coverage --pool=threads"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
