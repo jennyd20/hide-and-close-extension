@@ -1,9 +1,21 @@
+/**
+ * @Author Jenny Ross
+ *
+ * Entry point for the Hide and Close chrome extension. Execute the main logic
+ * when extension is clicked.
+ *
+ * TODO(@Jenny): add keyboard shortcut capability
+ **/
+
 import { executeTarget, getTarget, getUrl } from './hide-and-close.js';
 
-// This listener fires when the extension toolbar icon is clicked
-chrome.action.onClicked.addListener((tab) => {
+/** @param {chrome.tabs.Tab} tab */
+async function handleExtensionActivation(tab) {
   console.log('HideAndClose extension clicked on tab:', tab.id);
-  executeTarget(getTarget(getUrl()));
-});
+  await executeTarget(getTarget(getUrl()));
+}
 
-console.log('Script loaded!');
+// The listener fires when the extension toolbar icon is clicked
+chrome.action.onClicked.addListener(handleExtensionActivation);
+
+//console.log('Script loaded!');

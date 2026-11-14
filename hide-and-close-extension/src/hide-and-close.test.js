@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, describe, vi } from 'vitest';
-import { getTarget, executeTarget } from './hide-and-close.js';
+import { getUrl, getTarget, executeTarget } from './hide-and-close.js';
 
 test('Script compiles', () => {
   expect(true).toBe(true);
@@ -88,6 +88,17 @@ describe('FB saved items', () => {
   );
 });
 
+describe('getUrl', () => {
+  test('returns the current window.location.href', () => {
+    vi.spyOn(window, 'location', 'get').mockReturnValue({
+      href: 'https://www.facebook.com/marketplace/item/12345',
+    });
+
+    const url = getUrl();
+    expect(url).toBe('https://www.facebook.com/marketplace/item/12345');
+  });
+});
+
 describe('Execute target', () => {
   beforeEach(() => {
     vi.resetModules();
@@ -118,5 +129,42 @@ describe('Execute target', () => {
 
     const result = await executeTarget(target);
     expect(result).toBe('mocked-fb-saved-cleanup');
+  });
+
+  test('executes targetScript when it is a function', async () => {
+    const target = 'fb-item';
+    const expectedPath = './targets/fb-item.js';
+    const mockFn = vi.fn();
+    vi.doMock(expectedPath, () => ({
+      targetScript: mockFn,
+    }));
+    const result = await executeTarget(target);
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(result).toBe(mockFn);
+  });
+
+  test('does not throw and returns targetScript when it is not a function', async () => {
+    const target = 'fb-saved-cleanup';
+    const expectedPath = './targets/fb-saved-cleanup.js';
+    vi.doMock(expectedPath, () => ({
+      targetScript: 'not-a-function',
+    }));
+    const result = await executeTarget(target);
+    expect(result).toBe('not-a-function');
+  });
+
+  test('returns null and warns when target is null', async () => {
+    const consoleWarnSpy = vi
+      .spyOn(console, 'warn')
+      .mockImplementation(() => {});
+    const result = await executeTarget(null);
+    expect(result).toBeNull();
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      'No target matched for the current URL',
+    );
+  });
+
+  test('throws when target file does not exist', async () => {
+    await expect(executeTarget('non-existent-target')).rejects.toThrow();
   });
 });

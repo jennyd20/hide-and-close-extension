@@ -1,64 +1,58 @@
-import { triggerClickAndWait } from './index.js';
+import { triggerClickAsync } from './click-trigger.js';
 
-export function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
+export async function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
   console.log('START - hideItem');
-  // @J These are under the following node:
-  //data-interactable="|click||input||keydown||keyup||change|"
-  // @J is this too broad? Lots of those exist
+  // TODO(@Jenny) These are under the following node:
+  // data-interactable="|click||input||keydown||keyup||change|"
+  // is this too broad? Lots of those exist
   console.log({ moreLabel }, { menuLabel }, { hideLabel });
 
   try {
-    console.log('Getting the more options button');
     // Click the button for additional options
     const moreOptions = i.querySelector(
       '[role="button"][aria-label="' + moreLabel + '"]',
     );
-    console.log({ moreOptions });
-    console.log('Clicking moreOptions');
-    const moreMenu = triggerClickAndWait(
+    if (!moreOptions) {
+      throw new Error(`Button "${moreLabel}" not found`);
+    }
+
+    const moreMenu = await triggerClickAsync(
       moreOptions,
       '[role="menu"][aria-label="' + menuLabel + '"]',
     );
-    //clickElement(moreOptions);
-
-    // Find the new menu
-    // console.log('Getting the moreMenu');
-    // const moreMenu = document.querySelector(
-    //     '[role="menu"][aria-label="' + menuLabel + '"]'
-    // );
-    // console.log({ moreMenu });
 
     // Get items in the new menu
-    console.log('Getting the menu options');
     const menuOptions = moreMenu.querySelectorAll('[role="menuitem"]');
-    console.log({ menuOptions });
+    console.log(`Menu options: ${menuOptions}`);
 
     // Find the correct hide button
-    console.log('Finding the hide button');
     const hideOption = [...menuOptions].find((el) =>
       el.textContent.trim().startsWith(hideLabel),
     );
-    console.log({ hideOption });
+    if (!hideOption) {
+      throw new Error(`Hide option "${hideLabel}" not found in menu`);
+    }
 
-    // Activate
-    console.log('Clicking the hide button');
-    //clickElement(hideOption);
+    console.log({ hideOption });
     hideOption.click();
     console.log('END - hideItem (success)');
     return true;
   } catch (e) {
     // Something failed
-    console.error(e);
+    console.error(e.message);
     console.log('END - hideItem (failure)');
     return false;
   }
 }
 
-export async function scrollToBottom() {
+export async function scrollToBottom(maxScrolls = 50) {
   console.log('START - scrollToBottom');
   let lastHeight = document.body.scrollHeight;
+  let scrollCount = 0;
 
-  while (true) {
+  // Don't try to scroll more than 50 times, in case the page is very long or
+  // infinite scrolling is enabled.
+  while (scrollCount < maxScrolls) {
     // Scroll to the current bottom
     window.scrollTo(0, document.body.scrollHeight);
 
@@ -71,7 +65,7 @@ export async function scrollToBottom() {
       break; // Stop if no new content loaded
     }
     lastHeight = newHeight;
+    scrollCount++;
   }
-  console.log('Reached the bottom!');
   console.log('END - scrollToBottom');
 }

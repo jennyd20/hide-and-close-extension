@@ -1,8 +1,8 @@
 // Written with Antigravity
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import { triggerClickAndWait } from './click-trigger.js';
+import { triggerClickAsync } from './click-trigger.js';
 
-describe('triggerClickAndWait', () => {
+describe('triggerClickAsync', () => {
   let triggerButton;
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('triggerClickAndWait', () => {
 
     const clickSpy = vi.spyOn(triggerButton, 'click');
 
-    const result = await triggerClickAndWait(triggerButton, targetSelector);
+    const result = await triggerClickAsync(triggerButton, targetSelector);
 
     expect(clickSpy).toHaveBeenCalledTimes(1);
     expect(result).not.toBeUndefined();
@@ -47,7 +47,7 @@ describe('triggerClickAndWait', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => {});
 
-    const result = await triggerClickAndWait(null, '.target-item');
+    const result = await triggerClickAsync(null, '.target-item');
 
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(result).toBeUndefined();
@@ -61,7 +61,7 @@ describe('triggerClickAndWait', () => {
       .mockImplementation(() => {});
 
     // Button does not insert anything matching '.non-existent-menu'
-    const promise = triggerClickAndWait(triggerButton, '.non-existent-menu');
+    const promise = triggerClickAsync(triggerButton, '.non-existent-menu');
 
     // Fast-forward past the default 5000ms timeout in waitForElement
     await vi.advanceTimersByTimeAsync(5000);
@@ -83,7 +83,7 @@ describe('triggerClickAndWait', () => {
     const existingElement = document.createElement('div');
     existingElement.className = 'pre-existing';
     document.body.appendChild(existingElement);
-    const result = await triggerClickAndWait(triggerButton, '.pre-existing');
+    const result = await triggerClickAsync(triggerButton, '.pre-existing');
     expect(result).toBe(existingElement);
   });
 
@@ -92,7 +92,7 @@ describe('triggerClickAndWait', () => {
     const consoleErrorSpy = vi
       .spyOn(console, 'error')
       .mockImplementation(() => {});
-    const result = await triggerClickAndWait(
+    const result = await triggerClickAsync(
       triggerButton,
       ':::invalid[selector',
     );
@@ -106,7 +106,7 @@ describe('triggerClickAndWait', () => {
     const consoleErrorSpy = vi
       .spyOn(console, 'error')
       .mockImplementation(() => {});
-    const promise = triggerClickAndWait(triggerButton, '.desired-element');
+    const promise = triggerClickAsync(triggerButton, '.desired-element');
     // Add an unrelated element
     const unrelated = document.createElement('div');
     unrelated.className = 'unrelated';

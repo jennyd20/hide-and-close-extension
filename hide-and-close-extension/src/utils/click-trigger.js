@@ -1,8 +1,14 @@
-export async function triggerClickAndWait(el, selector) {
+/**
+ * Triggers a click on an element and waits for a target element to appear.
+ * @param {Element} el - Element to click
+ * @param {string} selector - The CSS selector to watch for.
+ * @returns {Promise<Element|undefined>}
+ */
+export async function triggerClickAsync(el, selector) {
   try {
     el.click();
     console.log('Button clicked, waiting for target');
-    return await waitForElement(selector);
+    return await elementPromise(selector);
   } catch (error) {
     console.error(error.message);
   }
@@ -12,8 +18,9 @@ export async function triggerClickAndWait(el, selector) {
  * Helper function that returns a Promise which resolves when an element appears.
  * @param {string} selector - The CSS selector to watch for.
  * @param {number} timeout - Maximum time to wait in milliseconds (default 5000ms).
+ * @returns {Promise<Element|undefined>}
  */
-function waitForElement(selector, timeout = 5000) {
+function elementPromise(selector, timeout = 5000) {
   return new Promise((resolve, reject) => {
     // Check if the element already exists immediately
     const element = document.querySelector(selector);

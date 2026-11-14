@@ -5,7 +5,7 @@ export function getUrl() {
 }
 
 export function getTarget(currentUrl) {
-  console.log('Starting script');
+  //console.log('Starting script');
 
   const fbItemUrlRegex =
     /^https:\/\/www\.facebook\.com\/marketplace\/item\/\d+\/?(\?.*)?$/;
@@ -28,6 +28,11 @@ export function getTarget(currentUrl) {
 }
 
 export async function executeTarget(target) {
+  if (!target) {
+    console.warn('No target matched for the current URL');
+    return null;
+  }
+
   const targetPath = './targets/' + target + '.js';
   const { targetScript } = await import(targetPath);
 
@@ -36,19 +41,3 @@ export async function executeTarget(target) {
   }
   return targetScript;
 }
-
-// // Supported targets
-// const fbMarketplaceItemUrl = "https://www.facebook.com/marketplace/item/";
-// const fbSavedItemsUrl = "https://www.facebook.com/saved/";
-
-// if (currentUrl.startsWith(fbMarketplaceItemUrl)) {
-//   const { fbIndividualItemHide } =
-//     await import("./targets/fbIndividualItemHide.js");
-//   fbIndividualItemHide();
-// } else if (currentUrl.startsWith(fbSavedItemsUrl)) {
-//   const { fbSavedBulkRemove } = await import("./targets/fb-saved-cleanup.js");
-//   fbSavedBulkRemove();
-// } else {
-//   console.error("No supported targets found");
-//   // throw new Error('Error: Not a supported target');
-// }
