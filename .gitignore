@@ -1,23 +1,23 @@
 # IDE & Editor Settings
 .vscode/*
 !.vscode/settings.json
+!.vscode/launch.json
 
-# Test coverage and reports
+# Test configurations, coverage, and debug profiles
+.chrome-debug-profile/
 coverage/
 
 # Dependencies
 node_modules/
 
-# Production builds & zips (Chrome extension packages)
-dist/
-build/
+# WXT build outputs and packages
+.output/
+.wxt/
 *.zip
 *.crx
 
 # Logs
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # OS-generated files
 .DS_Store

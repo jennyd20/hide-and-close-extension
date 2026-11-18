@@ -1,12 +1,14 @@
+import { fbIndividualItemHide } from './targets/fb-item.js';
+import { fbSavedItemsHideAll } from './targets/fb-saved-cleanup.js';
+
 export function getUrl() {
-  const currentUrl = window.location.href;
-  console.log({ currentUrl });
-  return currentUrl;
+  if (typeof window !== 'undefined') {
+    return window.location.href;
+  }
+  return null;
 }
 
 export function getTarget(currentUrl) {
-  //console.log('Starting script');
-
   const fbItemUrlRegex =
     /^https:\/\/www\.facebook\.com\/marketplace\/item\/\d+\/?(\?.*)?$/;
 
@@ -22,10 +24,13 @@ export function getTarget(currentUrl) {
   const urlMatch = supportedTargetUrls.find(([targetUrl]) =>
     targetUrl.test(currentUrl),
   );
-  const target = urlMatch ? urlMatch[1] : null;
-
-  return target;
+  return urlMatch ? urlMatch[1] : null;
 }
+
+const targetHandlers = {
+  'fb-item': fbIndividualItemHide,
+  'fb-saved-cleanup': fbSavedItemsHideAll,
+};
 
 export async function executeTarget(target) {
   if (!target) {
@@ -33,11 +38,11 @@ export async function executeTarget(target) {
     return null;
   }
 
-  const targetPath = './targets/' + target + '.js';
-  const { targetScript } = await import(targetPath);
-
-  if (typeof targetScript === 'function') {
-    targetScript();
+  const handler = targetHandlers[target];
+  if (typeof handler === 'function') {
+    return await handler();
   }
-  return targetScript;
+
+  console.warn(`No handler implemented for target "${target}"`);
+  return null;
 }

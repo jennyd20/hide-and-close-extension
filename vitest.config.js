@@ -1,15 +1,16 @@
 import { defineConfig } from 'vitest/config';
+import { WxtVitest } from 'wxt/testing/vitest-plugin';
 
 export default defineConfig({
+  plugins: [WxtVitest()],
   test: {
+    globals: true,
     environment: 'jsdom',
-    pool: 'threads',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
       include: ['src/**/*.js'],
-      // Exclude test, main, and barrel files
-      exclude: ['src/**/*.test.js', 'src/**/index.js', 'src/main.js'],
+      exclude: ['src/**/*.test.js', 'src/**/index.js'],
     },
   },
 });

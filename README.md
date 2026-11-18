@@ -23,3 +23,7 @@ v1_bookmarklet
 
 The initial target is Facebook Marketplace, to eventually expand to Nextdoor
 and Offerup.
+
+Uses WXT
+- Run ```npm run dev``` for testing
+- Run ```npm run build``` for production
