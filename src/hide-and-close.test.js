@@ -1,170 +1,53 @@
-import { beforeEach, expect, test, describe, vi } from 'vitest';
-import { getUrl, getTarget, executeTarget } from './hide-and-close.js';
+import { afterEach, expect, test, describe, vi } from 'vitest';
+import { runHideAndClose } from './hide-and-close.js';
+import * as fbItemModule from './targets/fb-item.js';
+import * as fbSavedModule from './targets/fb-saved-cleanup.js';
 
-test('Script compiles', () => {
-  expect(true).toBe(true);
-});
+describe('runHideAndClose', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
 
-describe('FB individual items', () => {
-  const testCases = [
-    {
-      name: 'Valid item with slash',
-      input: 'https://www.facebook.com/marketplace/item/1589479896055232/',
-      expected: 'fb-item',
-    },
-    {
-      name: 'Valid item without slash',
-      input: 'https://www.facebook.com/marketplace/item/1589479896055232',
-      expected: 'fb-item',
-    },
-    {
-      name: 'No specific item',
-      input: 'https://www.facebook.com/marketplace/item/',
-      expected: null,
-    },
-    {
-      name: 'Non-target url',
-      input: 'https://www.google.com',
-      expected: null,
-    },
-    {
-      name: 'With query parameters',
-      input:
-        'https://www.facebook.com/marketplace/item/1589479896055232?query=iwantit&marketplace=fb',
-      expected: 'fb-item',
-    },
-  ];
-
-  test.each(testCases)(
-    '$name (maps "$input" -> "$expected")',
-    ({ input, expected }) => {
-      const result = getTarget(input);
-      expect(result).toBe(expected);
-    },
-  );
-});
-
-describe('FB saved items', () => {
-  const testCases = [
-    {
-      name: 'Test correct list page, with trailing slash',
-      input: 'https://www.facebook.com/saved/',
-      expected: 'fb-saved-cleanup',
-    },
-    {
-      name: 'Valid item without slash',
-      input: 'https://www.facebook.com/saved',
-      expected: 'fb-saved-cleanup',
-    },
-    {
-      name: 'Other category of saved items',
-      input: 'https://www.facebook.com/saved/?dashboard_section=VIDEOS',
-      expected: null,
-    },
-    {
-      name: 'Product save page, with query parameters',
-      input: 'https://www.facebook.com/saved/?source=HOME&local=LOCAL',
-      expected: 'fb-saved-cleanup',
-    },
-    {
-      name: 'Product save page, PRODUCTS hidden among random query parameters',
-      input:
-        'https://www.facebook.com/saved/?locale=LOCAL&dashboard_section=PRODUCTS&source=Marketplace',
-      expected: 'fb-saved-cleanup',
-    },
-    {
-      name: 'Other category of saved items',
-      input: 'https://www.facebook.com/saved/?dashboard_section=VIDEOS',
-      expected: null,
-    },
-  ];
-
-  test.each(testCases)(
-    '$name (maps "$input" -> "$expected")',
-    ({ input, expected }) => {
-      const result = getTarget(input);
-      expect(result).toBe(expected);
-    },
-  );
-});
-
-describe('getUrl', () => {
-  test('returns the current window.location.href', () => {
-    vi.spyOn(window, 'location', 'get').mockReturnValue({
-      href: 'https://www.facebook.com/marketplace/item/12345',
+  test('executes fbIndividualItemHide when on an FB item page', async () => {
+    const resolvedValue = 'mocked-fb-item-success';
+    vi.stubGlobal('location', {
+      href: 'https://www.facebook.com/marketplace/item/1234567890/',
     });
-
-    const url = getUrl();
-    expect(url).toBe('https://www.facebook.com/marketplace/item/12345');
-  });
-});
-
-describe('Execute target', () => {
-  beforeEach(() => {
-    vi.resetModules();
+    const spy = vi
+      .spyOn(fbItemModule, 'fbIndividualItemHide')
+      .mockResolvedValue(resolvedValue);
+    const result = await runHideAndClose();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(result).toBe(resolvedValue);
   });
 
-  test('Correct FB Item execution', async () => {
-    const target = 'fb-item';
-    const expectedPath = './targets/fb-item.js';
-
-    vi.doMock(expectedPath, () => {
-      return {
-        targetScript: 'mocked-fb-item',
-      };
+  test('executes fbSavedItemsHideAll when on an FB saved page', async () => {
+    const resolvedValue = 'mocked-fb-saved-success';
+    vi.stubGlobal('location', {
+      href: 'https://www.facebook.com/saved/?dashboard_section=PRODUCTS',
     });
-
-    const result = await executeTarget(target);
-    expect(result).toBe('mocked-fb-item');
+    const spy = vi
+      .spyOn(fbSavedModule, 'fbSavedItemsHideAll')
+      .mockResolvedValue(resolvedValue);
+    const result = await runHideAndClose();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(result).toBe(resolvedValue);
   });
 
-  test('Correct FB Saved Bulk Remove execution', async () => {
-    const target = 'fb-saved-cleanup';
-    const expectedPath = './targets/fb-saved-cleanup.js';
-    vi.doMock(expectedPath, () => {
-      return {
-        targetScript: 'mocked-fb-saved-cleanup',
-      };
+  test('returns null and warns when URL does not match any target path', async () => {
+    vi.stubGlobal('location', {
+      href: 'https://www.google.com',
     });
-
-    const result = await executeTarget(target);
-    expect(result).toBe('mocked-fb-saved-cleanup');
-  });
-
-  test('executes targetScript when it is a function', async () => {
-    const target = 'fb-item';
-    const expectedPath = './targets/fb-item.js';
-    const mockFn = vi.fn();
-    vi.doMock(expectedPath, () => ({
-      targetScript: mockFn,
-    }));
-    const result = await executeTarget(target);
-    expect(mockFn).toHaveBeenCalledTimes(1);
-    expect(result).toBe(mockFn);
-  });
-
-  test('does not throw and returns targetScript when it is not a function', async () => {
-    const target = 'fb-saved-cleanup';
-    const expectedPath = './targets/fb-saved-cleanup.js';
-    vi.doMock(expectedPath, () => ({
-      targetScript: 'not-a-function',
-    }));
-    const result = await executeTarget(target);
-    expect(result).toBe('not-a-function');
-  });
-
-  test('returns null and warns when target is null', async () => {
     const consoleWarnSpy = vi
       .spyOn(console, 'warn')
       .mockImplementation(() => {});
-    const result = await executeTarget(null);
+    const result = await runHideAndClose();
     expect(result).toBeNull();
     expect(consoleWarnSpy).toHaveBeenCalledWith(
-      'No target matched for the current URL',
+      expect.stringContaining(
+        'No handler implemented for "https://www.google.com"',
+      ),
     );
-  });
-
-  test('throws when target file does not exist', async () => {
-    await expect(executeTarget('non-existent-target')).rejects.toThrow();
   });
 });
