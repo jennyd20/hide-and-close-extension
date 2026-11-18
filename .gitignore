@@ -1,10 +1,8 @@
 # IDE & Editor Settings
 .vscode/*
 !.vscode/settings.json
-!.vscode/launch.json
 
 # Test configurations, coverage, and debug profiles
-.chrome-debug-profile/
 coverage/
 
 # Dependencies
