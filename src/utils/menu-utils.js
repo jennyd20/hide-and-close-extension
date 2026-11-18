@@ -1,4 +1,4 @@
-import { triggerClickAsync } from './click-trigger.js';
+import { triggerClickAsync } from './dom-utils.js';
 
 export async function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
   console.log('START - hideItem');
@@ -43,29 +43,4 @@ export async function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
     console.log('END - hideItem (failure)');
     return false;
   }
-}
-
-export async function scrollToBottom(maxScrolls = 50) {
-  console.log('START - scrollToBottom');
-  let lastHeight = document.body.scrollHeight;
-  let scrollCount = 0;
-
-  // Don't try to scroll more than 50 times, in case the page is very long or
-  // infinite scrolling is enabled.
-  while (scrollCount < maxScrolls) {
-    // Scroll to the current bottom
-    window.scrollTo(0, document.body.scrollHeight);
-
-    // Wait for new dynamic content to load (adjust timeout if needed)
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Check if the height changed
-    let newHeight = document.body.scrollHeight;
-    if (newHeight === lastHeight) {
-      break; // Stop if no new content loaded
-    }
-    lastHeight = newHeight;
-    scrollCount++;
-  }
-  console.log('END - scrollToBottom');
 }

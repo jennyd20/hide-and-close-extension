@@ -1,5 +1,5 @@
 /**
- * Triggers a click on an element and waits for a target element to appear.
+ * Triggers a click action on an element and waits for a target element to appear.
  * @param {Element} el - Element to click
  * @param {string} selector - The CSS selector to watch for.
  * @returns {Promise<Element|undefined>}
@@ -54,4 +54,29 @@ function elementPromise(selector, timeout = 5000) {
       );
     }, timeout);
   });
+}
+
+export async function scrollToBottom(maxScrolls = 50) {
+  console.log('START - scrollToBottom');
+  let lastHeight = document.body.scrollHeight;
+  let scrollCount = 0;
+
+  // Don't try to scroll more than 50 times, in case the page is very long or
+  // infinite scrolling is enabled.
+  while (scrollCount < maxScrolls) {
+    // Scroll to the current bottom
+    window.scrollTo(0, document.body.scrollHeight);
+
+    // Wait for new dynamic content to load (adjust timeout if needed)
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Check if the height changed
+    let newHeight = document.body.scrollHeight;
+    if (newHeight === lastHeight) {
+      break; // Stop if no new content loaded
+    }
+    lastHeight = newHeight;
+    scrollCount++;
+  }
+  console.log('END - scrollToBottom');
 }

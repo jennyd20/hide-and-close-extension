@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest';
 import { fbIndividualItemHide } from './fb-item.js';
-import * as utils from '../utils/utils.js';
+import * as menu_utils from '../utils/menu-utils.js';
 
 describe('fbIndividualItemHide', () => {
   let backSpy;
@@ -26,13 +26,13 @@ describe('fbIndividualItemHide', () => {
   });
 
   test('calls history.back() when hideItem succeeds and history length > 1', async () => {
-    vi.spyOn(utils, 'hideItem').mockReturnValue(true);
+    vi.spyOn(menu_utils, 'hideItem').mockReturnValue(true);
     Object.defineProperty(window.history, 'length', {
       value: 3,
       configurable: true,
     });
     await fbIndividualItemHide();
-    expect(utils.hideItem).toHaveBeenCalledWith(
+    expect(menu_utils.hideItem).toHaveBeenCalledWith(
       'More Item Options',
       'Additional options for this Marketplace listing',
       'Hide listing',
@@ -42,21 +42,21 @@ describe('fbIndividualItemHide', () => {
   });
 
   test('calls window.close() when hideItem succeeds and history length <= 1', async () => {
-    vi.spyOn(utils, 'hideItem').mockReturnValue(true);
+    vi.spyOn(menu_utils, 'hideItem').mockReturnValue(true);
     Object.defineProperty(window.history, 'length', {
       value: 1,
       configurable: true,
     });
     await fbIndividualItemHide();
-    expect(utils.hideItem).toHaveBeenCalled();
+    expect(menu_utils.hideItem).toHaveBeenCalled();
     expect(closeSpy).toHaveBeenCalledTimes(1);
     expect(backSpy).not.toHaveBeenCalled();
   });
 
   test('neither navigates back nor closes window when hideItem fails', async () => {
-    vi.spyOn(utils, 'hideItem').mockReturnValue(false);
+    vi.spyOn(menu_utils, 'hideItem').mockReturnValue(false);
     await fbIndividualItemHide();
-    expect(utils.hideItem).toHaveBeenCalled();
+    expect(menu_utils.hideItem).toHaveBeenCalled();
     expect(backSpy).not.toHaveBeenCalled();
     expect(closeSpy).not.toHaveBeenCalled();
   });
