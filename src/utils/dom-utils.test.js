@@ -131,7 +131,7 @@ describe('Scrolling', () => {
     vi.useRealTimers();
   });
 
-  test('Scroll window until document height stops changing', async () => {
+  it('Scroll window until document height stops changing', async () => {
     // 1. Mock window.scrollTo to update window.scrollY
     window.scrollY = 0;
     const scrollToSpy = vi
