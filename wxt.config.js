@@ -11,5 +11,14 @@ export default defineConfig({
     action: {
       default_title: 'Hide and Close',
     },
+    // Optional: Required when publishing or testing persistent features in Firefox
+    browser_specific_settings: {
+      gecko: {
+        id: '14525577+jennyd20@users.noreply.github.com',
+        data_collection_permissions: {
+          required: ['none'],
+        },
+      },
+    },
   },
 });
