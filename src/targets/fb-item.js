@@ -1,4 +1,4 @@
-import { hideItem } from '../utils/menu-utils.js';
+import { hideItem } from '@/utils/menu-utils.js';
 
 /***************************************************************************************
  ** IF LOOKING AT AN INDIVIDUAL FACEBOOK ITEM, HIDE IT AND THEN RETURN TO MARKETPLACE **

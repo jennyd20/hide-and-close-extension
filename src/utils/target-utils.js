@@ -1,5 +1,5 @@
-import { fbIndividualItemHide } from '../targets/fb-item.js';
-import { fbSavedItemsHideAll } from '../targets/fb-saved-cleanup.js';
+import { fbIndividualItemHide } from '@/targets/fb-item.js';
+import { fbSavedItemsHideAll } from '@/targets/fb-saved-cleanup.js';
 
 // Given a URL, return the appropriate handler function for that URL, or null if no match is found.
 export function getTargetHandler(currentUrl) {

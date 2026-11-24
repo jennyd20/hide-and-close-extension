@@ -1,4 +1,4 @@
-import { runHideAndClose } from '../hide-and-close.js';
+import { runHideAndClose } from '@/hide-and-close.js';
 
 export default defineContentScript({
   matches: ['https://www.facebook.com/*'],

@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest';
 import { fbIndividualItemHide } from './fb-item.js';
-import * as menu_utils from '../utils/menu-utils.js';
+import * as menu_utils from '@/utils/menu-utils.js';
 
 describe('fbIndividualItemHide', () => {
   let backSpy;

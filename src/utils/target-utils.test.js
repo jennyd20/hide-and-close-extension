@@ -1,7 +1,7 @@
 import { expect, test, describe } from 'vitest';
 import { getTargetHandler } from './target-utils.js';
-import { fbIndividualItemHide } from '../targets/fb-item.js';
-import { fbSavedItemsHideAll } from '../targets/fb-saved-cleanup.js';
+import { fbIndividualItemHide } from '@/targets/fb-item.js';
+import { fbSavedItemsHideAll } from '@/targets/fb-saved-cleanup.js';
 
 describe('Invalid targets, expected null', () => {
   const testCases = [
