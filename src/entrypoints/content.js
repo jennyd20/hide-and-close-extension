@@ -1,4 +1,4 @@
-import { executeTarget, getTarget } from '../hide-and-close.js';
+import { runHideAndClose } from '../hide-and-close.js';
 
 export default defineContentScript({
   matches: ['https://www.facebook.com/*'],
@@ -8,7 +8,6 @@ export default defineContentScript({
       'HideAndClose content script running on:',
       window.location.href,
     );
-    const target = getTarget(window.location.href);
-    await executeTarget(target);
+    await runHideAndClose();
   },
 });

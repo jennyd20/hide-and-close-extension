@@ -25,5 +25,18 @@ The initial target is Facebook Marketplace, to eventually expand to Nextdoor
 and Offerup.
 
 Uses WXT
-- Run ```npm run dev``` for testing
-- Run ```npm run build``` for production
+- Run `npm run dev` for testing
+- Run `npm run build` for production
+
+
+Daily Development:
+- Run npm run dev in your terminal.
+- Load .output/chrome-mv3-dev once into your normal Chrome (chrome://extensions -> Load unpacked).
+- Edit code in VS Code -> save -> WXT hot-reloads it in Chrome.
+
+Debugging Live Code on Facebook:
+- Open DevTools (F12) on Facebook.
+- Use debugger; or set breakpoints in the DevTools Sources tab.
+
+Deploying:
+- Run npm run build and npm run zip to get your ready-to-upload zip.

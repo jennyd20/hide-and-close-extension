@@ -6,7 +6,8 @@ Also, window.location.href navigation won't work in a service worker — needs c
 One remaining architectural concern: chrome.tabs.update() changes the tab's URL, causing a full page reload. The await scrollToBottom() and document.querySelectorAll(...) on the lines after will run in the service worker context, where document is undefined. This logic needs to live in a content script injected into the navigated page — not the service worker. This is a deeper architectural issue to solve when this feature is fully implemented.
 */
 
-import { hideItem, scrollToBottom } from '../utils/menu-utils.js';
+import { scrollToBottom } from '../utils/dom-utils.js';
+import { hideItem } from '../utils/menu-utils.js';
 
 /******************************************************************
  ** IF AT THE FACEBOOK "SAVED ITEMS" PAGE, BULK REMOVE SOLD ITEMS *
