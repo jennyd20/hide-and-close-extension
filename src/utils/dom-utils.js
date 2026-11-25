@@ -8,7 +8,7 @@ export async function triggerClickAsync(el, selector) {
   try {
     el.click();
     console.log('Button clicked, waiting for target');
-    return await elementPromise(selector);
+    return await targetElementPromise(selector);
   } catch (error) {
     console.error(error.message);
   }
@@ -20,7 +20,7 @@ export async function triggerClickAsync(el, selector) {
  * @param {number} timeout - Maximum time to wait in milliseconds (default 5000ms).
  * @returns {Promise<Element|undefined>}
  */
-function elementPromise(selector, timeout = 5000) {
+function targetElementPromise(selector, timeout = 5000) {
   return new Promise((resolve, reject) => {
     // Check if the element already exists immediately
     const element = document.querySelector(selector);

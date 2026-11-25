@@ -5,25 +5,24 @@ export async function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
   // TODO(@Jenny) These are under the following node:
   // data-interactable="|click||input||keydown||keyup||change|"
   // is this too broad? Lots of those exist
-  console.log({ moreLabel }, { menuLabel }, { hideLabel });
+  console.log(`Inputs: "${moreLabel}", "${menuLabel}", "${hideLabel}"`);
 
   try {
-    // Click the button for additional options
-    const moreOptions = i.querySelector(
-      '[role="button"][aria-label="' + moreLabel + '"]',
-    );
+    // Find the button for additional options
+    const moreOptions = i.querySelector(getTextQuery('button', moreLabel));
     if (!moreOptions) {
       throw new Error(`Button "${moreLabel}" not found`);
     }
 
+    // Click the more options menu
     const moreMenu = await triggerClickAsync(
       moreOptions,
-      '[role="menu"][aria-label="' + menuLabel + '"]',
+      getTextQuery('menu', menuLabel),
     );
 
     // Get items in the new menu
     const menuOptions = moreMenu.querySelectorAll('[role="menuitem"]');
-    console.log(`Menu options: ${menuOptions}`);
+    console.log(`Menu options: ${getReadableOptions}`);
 
     // Find the correct hide button
     const hideOption = [...menuOptions].find((el) =>
@@ -40,7 +39,17 @@ export async function hideItem(moreLabel, menuLabel, hideLabel, i = document) {
   } catch (e) {
     // Something failed
     console.error(e.message);
-    console.log('END - hideItem (failure)');
-    return false;
   }
+  console.log('END - hideItem (failure)');
+  return false;
+}
+
+function getReadableOptions(elementList) {
+  return Array.from(elementList).map((el) => {
+    return el.getAttribute('aria-label') || el.textContent.trim();
+  });
+}
+
+function getTextQuery(role, label) {
+  return '[role="' + role + '"][aria-label="' + label + '"]';
 }
