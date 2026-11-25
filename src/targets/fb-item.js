@@ -1,4 +1,5 @@
 import { hideItem } from '@/utils/menu-utils.js';
+import { backOrClose } from '@/utils/nav-utils.js';
 
 /***************************************************************************************
  ** IF LOOKING AT AN INDIVIDUAL FACEBOOK ITEM, HIDE IT AND THEN RETURN TO MARKETPLACE **
@@ -14,12 +15,9 @@ export async function fbIndividualItemHide() {
 
   // Close the tab or go back to the prior page
   if (success) {
-    console.log('Attempting to close tab or return to prior page...');
-    if (history.length > 1) {
-      history.back();
-    } else {
-      window.close();
-    }
+    await backOrClose();
+  } else {
+    console.warn('Unable to hide the item');
   }
   console.log('END - fbIndividualItemHide');
 }

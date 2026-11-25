@@ -1,63 +1,40 @@
 import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest';
 import { fbIndividualItemHide } from './fb-item.js';
 import * as menu_utils from '@/utils/menu-utils.js';
+import * as nav_utils from '@/utils/nav-utils.js';
 
 describe('fbIndividualItemHide', () => {
-  let backSpy;
-  let closeSpy;
-  const originalHistoryLength = Object.getOwnPropertyDescriptor(
-    window.history,
-    'length',
-  );
+  let hideItemSpy;
+  let backOrCloseSpy;
 
   beforeEach(() => {
     vi.restoreAllMocks();
-    backSpy = vi.spyOn(window.history, 'back').mockImplementation(() => {});
-    closeSpy = vi.spyOn(window, 'close').mockImplementation(() => {});
+    hideItemSpy = vi.spyOn(menu_utils, 'hideItem').mockImplementation(() => {});
+    backOrCloseSpy = vi
+      .spyOn(nav_utils, 'backOrClose')
+      .mockImplementation(() => {});
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
-    if (originalHistoryLength) {
-      Object.defineProperty(window.history, 'length', originalHistoryLength);
-    } else {
-      delete window.history.length;
-    }
+    vi.restoreAllMocks;
   });
 
-  test('calls history.back() when hideItem succeeds and history length > 1', async () => {
-    vi.spyOn(menu_utils, 'hideItem').mockReturnValue(true);
-    Object.defineProperty(window.history, 'length', {
-      value: 3,
-      configurable: true,
-    });
+  test('Hides the menu item with the correctly named menu items on the FB item page', async () => {
+    hideItemSpy.mockReturnValue(true);
     await fbIndividualItemHide();
-    expect(menu_utils.hideItem).toHaveBeenCalledWith(
+    expect(hideItem).toHaveBeenCalledWith(
       'More Item Options',
       'Additional options for this Marketplace listing',
       'Hide listing',
     );
-    expect(backSpy).toHaveBeenCalledTimes(1);
-    expect(closeSpy).not.toHaveBeenCalled();
+    expect(hideItem).toHaveReturnedWith(true);
+    expect(backOrCloseSpy).toHaveBeenCalled();
   });
 
-  test('calls window.close() when hideItem succeeds and history length <= 1', async () => {
-    vi.spyOn(menu_utils, 'hideItem').mockReturnValue(true);
-    Object.defineProperty(window.history, 'length', {
-      value: 1,
-      configurable: true,
-    });
+  test('Do not attempt to go back if hiding the item failed', async () => {
+    hideItemSpy.mockReturnValue(false);
     await fbIndividualItemHide();
-    expect(menu_utils.hideItem).toHaveBeenCalled();
-    expect(closeSpy).toHaveBeenCalledTimes(1);
-    expect(backSpy).not.toHaveBeenCalled();
-  });
-
-  test('neither navigates back nor closes window when hideItem fails', async () => {
-    vi.spyOn(menu_utils, 'hideItem').mockReturnValue(false);
-    await fbIndividualItemHide();
-    expect(menu_utils.hideItem).toHaveBeenCalled();
-    expect(backSpy).not.toHaveBeenCalled();
-    expect(closeSpy).not.toHaveBeenCalled();
+    expect(hideItem).toHaveReturnedWith(false);
+    expect(backOrCloseSpy).not.toHaveBeenCalled();
   });
 });
